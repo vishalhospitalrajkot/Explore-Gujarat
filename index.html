@@ -1,0 +1,1436 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>An Interactive Guide to Gujarat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;600;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Google Translate Script -->
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <!-- Chosen Palette: Sands & Saffron -->
+    <!-- Application Structure Plan: All content sections are displayed on a single page. Sections are separated visually by padding and margins. Google Translate widget is added for language selection. An audio player has been included at the top for an overview. The "Contact Us" section is retained at the end. -->
+    <!-- Visualization & Content Choices:
+        - UNESCO Sites: Report Info: 4 sites with inscription years -> Goal: Show change/growth -> Viz: HTML/CSS Timeline -> Justification: Best for chronological data, visually engaging.
+        - Wildlife Areas: Report Info: 4 National Parks, 21 Sanctuaries -> Goal: Compare quantities -> Viz: Bar Chart -> Justification: Clear and simple comparison of two numbers. Library/Method: Chart.js/Canvas.
+        - Spiritual Sites: Report Info: Diversity of pilgrimage sites -> Goal: Show composition -> Viz: Donut Chart -> Justification: Effectively shows the mix of different types of sacred sites (Jyotirlinga, Shakti Peeth, etc.). Library/Method: Chart.js/Canvas.
+        - Festivals: Report Info: Key festivals and details -> Goal: Organize info -> Viz: Simple Grid of Cards -> Justification: Manages information in a clean, grid layout.
+        - Handicrafts: Report Info: Various craft types -> Goal: Organize info -> Viz: Static list/description -> Justification: Presents categorized details.
+        - Cuisine: Report Info: Food categories -> Goal: Organize info -> Viz: Accordion -> Justification: Neatly organizes list-based information.
+        - CONFIRMING NO SVG/Mermaid.
+    -->
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #FFF8F0; color: #4A4A4A; }
+        h1, h2, h3, h4 { font-family: 'Teko', sans-serif; font-weight: 600; letter-spacing: 1px; color: #8B4513; }
+        .chart-container { position: relative; width: 100%; max-width: 500px; margin-left: auto; margin-right: auto; height: 300px; max-height: 350px; }
+        @media (min-width: 768px) { .chart-container { height: 350px; } }
+        /* Ensure sections are always visible, no `display: none` */
+        .content-section {
+            display: block;
+            margin-bottom: 4rem; /* Add spacing between sections */
+            padding-top: 2rem; /* Add padding for visual breaks */
+        }
+        .content-section.grid {
+            display: grid; /* Maintain grid layout for specific sections */
+        }
+        .timeline-item::before { content: ''; position: absolute; left: -29px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; background-color: #FFA500; border: 3px solid #FFF8F0; border-radius: 50%; z-index: 1; }
+        .audio-button {
+            background-color: #FFA500;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+        .audio-button:hover {
+            background-color: #e69500;
+        }
+        .info-table th, .info-table td {
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            text-align: left;
+        }
+        .info-table th {
+            background-color: #ffecc6;
+            font-weight: 600;
+        }
+        /* Style for Google Translate widget */
+        #google_translate_element {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: center;
+        }
+        .goog-te-gadget {
+            font-family: 'Inter', sans-serif;
+            color: #4A4A4A;
+        }
+        .goog-te-combo {
+            border-radius: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #D2B48C;
+            background-color: #FFF8F0;
+            font-size: 1rem;
+            box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        }
+        .goog-te-combo:focus {
+            outline: none;
+            border-color: #FFA500;
+            box-shadow: 0 0 0 3px rgba(255, 165, 0, 0.2);
+        }
+        body > .skiptranslate {
+            display: none !important;
+        }
+        body {
+            top: 0 !important;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="container mx-auto px-4 py-8">
+        
+        <header class="text-center mb-8">
+            <h1 class="text-6xl md:text-7xl">Explore Gujarat</h1>
+            <p class="text-lg text-gray-600 mt-2">An Interactive Journey Through the Jewel of Western India</p>
+            <div class="mt-6">
+                <!-- Updated audio source to the new GitHub raw URL -->
+                <audio id="audioOverview" src="https://raw.githubusercontent.com/vishalhospitalrajkot/Explore-Gujarat/d0d68c08f633211083ac9c9f0b378bc915d292c1/Gujarat_%20Lions%2C%20Lost%20Cities%2C%20and%20a%20Desert%20of%20Salt.mp3" preload="none"></audio>
+                <button id="playPauseButton" class="audio-button">▶ Play Overview</button>
+            </div>
+            <!-- Google Translate Element -->
+            <div id="google_translate_element"></div>
+        </header>
+
+        <main id="main-content">
+            
+            <!-- Overview Section -->
+            <section id="overview" class="content-section grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-3 bg-white rounded-lg shadow-lg p-6 flex flex-col md:flex-row items-center justify-around text-center">
+                    <div class="p-4">
+                        <p class="text-6xl font-bold text-orange-500">4</p>
+                        <p class="text-xl font-semibold text-gray-700 mt-2">UNESCO World Heritage Sites</p>
+                        <p class="text-sm text-gray-500">A testament to global historical significance.</p>
+                    </div>
+                    <div class="p-4">
+                        <p class="text-6xl font-bold text-orange-500">25</p>
+                        <p class="text-xl font-semibold text-gray-700 mt-2">National Parks & Sanctuaries</p>
+                        <p class="text-sm text-gray-500">Home to the only Asiatic Lions in the world.</p>
+                    </div>
+                    <div class="p-4">
+                        <p class="text-6xl font-bold text-orange-500">1.5M+</p>
+                        <p class="text-xl font-semibold text-gray-700 mt-2">Annual Pilgrims</p>
+                        <p class="text-sm text-gray-500">At the Bhadarvi Poonam Fair alone.</p>
+                    </div>
+                </div>
+
+                <div class="md:col-span-2 lg:col-span-1 bg-white rounded-lg shadow-lg p-6">
+                    <h2 class="text-4xl text-center mb-4">Market Overview: Tourist Interests</h2>
+                    <p class="text-center text-gray-600 mb-4">Gujarat's tourism market is highly diversified, catering to a wide range of traveler profiles. The state's rich portfolio ensures a balanced appeal across spiritual, historical, and nature-based tourism.</p>
+                    <div class="chart-container h-80 max-h-80">
+                        <canvas id="touristInterestChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- History & Heritage Section -->
+            <section id="history" class="content-section">
+                <div class="bg-white rounded-lg shadow-lg p-6 md:p-8">
+                    <h2 class="text-4xl md:text-5xl text-center mb-6">Echoes of the Past: Historical & Architectural Wonders</h2>
+                    <p class="max-w-3xl mx-auto text-center text-gray-600 mb-8">Gujarat's landscape is a profound testament to millennia of civilization. From the sophisticated urban planning of the Indus Valley Civilization to the grandeur of royal palaces, the state offers an unparalleled journey into history. A recurring theme is the beautiful blend of Hindu and Islamic architectural styles, a reflection of the deep cultural interactions that have shaped the region for centuries.</p>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                        <div>
+                            <h3 class="text-3xl text-center mb-4">UNESCO World Heritage Timeline</h3>
+                            <p class="text-center text-gray-600 mb-6">This timeline showcases the growing global recognition of Gujarat's profound historical and architectural assets, marking its significance on the world stage.</p>
+                            <div class="relative pl-8 border-l-4 border-orange-200">
+                                <div class="timeline-item mb-8 relative">
+                                    <h4 class="font-bold text-xl text-amber-700">2004: Champaner-Pavagadh Park</h4>
+                                    <p class="text-sm">A concentration of largely unexcavated archaeological, historical and living cultural heritage properties.</p>
+                                </div>
+                                <div class="timeline-item mb-8 relative">
+                                    <h4 class="font-bold text-xl text-amber-700">2014: Rani ki Vav, Patan</h4>
+                                    <p class="text-sm">An exceptional example of a distinctive form of subterranean water architecture, the stepwell.</p>
+                                </div>
+                                <div class="timeline-item mb-8 relative">
+                                    <h4 class="font-bold text-xl text-amber-700">2017: Historic City of Ahmedabad</h4>
+                                    <p class="text-sm">Recognized for its rich architectural heritage from the Sultanate period, notably the Bhadra citadel, pols, and numerous mosques and tombs.</p>
+                                </div>
+                                <div class="timeline-item relative">
+                                    <h4 class="font-bold text-xl text-amber-700">2021: Dholavira, Kutch</h4>
+                                    <p class="text-sm">An ancient city of the Indus Valley Civilization, showcasing sophisticated urban planning and water management systems.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 gap-6">
+                            <div class="bg-orange-50 rounded-lg p-6">
+                                <h4 class="text-2xl mb-2">Indus Valley Marvels</h4>
+                                <p class="text-gray-600">With over 200 sites, Gujarat is a pivotal region for understanding one of the world's earliest urban cultures. Sites like **Lothal**, with its ancient dock, and **Dholavira**, a fortified city, offer invaluable insights into ancient trade, engineering, and daily life.</p>
+                            </div>
+                            <div class="bg-orange-50 rounded-lg p-6">
+                                <h4 class="text-2xl mb-2">Gandhi's Legacy: Sabarmati Ashram</h4>
+                                <p class="text-gray-600">This historic ashram was a pivotal center for India's freedom movement and the starting point for the iconic **Dandi March**. A visit here is a pilgrimage to the roots of modern India's founding principles of truth and non-violence.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Nature & Wildlife Section -->
+            <section id="nature" class="content-section">
+                <div class="bg-white rounded-lg shadow-lg p-6 md:p-8">
+                    <h2 class="text-4xl md:text-5xl text-center mb-6">Nature's Canvas: Wildlife, Deserts & Coastlines</h2>
+                    <p class="max-w-3xl mx-auto text-center text-gray-600 mb-8">Gujarat's natural beauty is as diverse as its history, encompassing unique ecosystems from the salt desert of Kutch to the dense forests of Gir. The state is a crucial biodiversity hotspot, leading successful conservation stories and offering unparalleled opportunities for eco-tourism and wildlife photography.</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                        <div>
+                            <h3 class="text-3xl text-center mb-4">Protected Wilderness Areas</h3>
+                            <p class="text-center text-gray-600 mb-6">Gujarat's commitment to conservation is evident in its extensive network of protected areas, which are vital for biodiversity.</p>
+                            <div class="chart-container">
+                                <canvas id="wildlifeChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="space-y-6">
+                            <div class="bg-green-50 rounded-lg p-6">
+                                <h4 class="text-2xl mb-2">The Roar of Asia: Gir National Park</h4>
+                                <p class="text-gray-600">Globally unique as the only natural habitat of the majestic Asiatic Lion. A premier wildlife destination, it also shelters leopards, deer, and a rich diversity of birdlife.</p>
+                            </div>
+                            <div class="bg-green-50 rounded-lg p-6">
+                                <h4 class="text-2xl mb-2">The White Desert: Rann of Kutch</h4>
+                                <p class="text-gray-600">A surreal salt desert that transforms seasonally. It hosts the vibrant Rann Utsav, a cultural festival celebrating the region's music, dance, and handicrafts under the moonlit sky.</p>
+                            </div>
+                            <div class="bg-green-50 rounded-lg p-6">
+                                <h4 class="text-2xl mb-2">Underwater Wonders: Marine National Park</h4>
+                                <p class="text-gray-600">India's first National Marine Park, a fragile ecosystem in the Gulf of Kutch with 42 islands, stunning coral reefs, and diverse marine life including dolphins and sea turtles.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Spirituality Section -->
+            <section id="spirituality" class="content-section">
+                <div class="bg-white rounded-lg shadow-lg p-6 md:p-8">
+                    <h2 class="text-4xl md:text-5xl text-center mb-6">Spiritual Sanctuaries: A Confluence of Faiths</h2>
+                    <p class="max-w-3xl mx-auto text-center text-gray-600 mb-8">Gujarat is a major spiritual hub, drawing millions of devotees from across India and the world. Its sacred sites are not just local attractions but integral parts of nationally significant pilgrimage circuits, representing a deep and enduring legacy of faith for Hindus, Jains, and many other communities.</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                        <div>
+                            <h3 class="text-3xl text-center mb-4">Diversity of Sacred Sites</h3>
+                            <p class="text-center text-gray-600 mb-6">The state is home to some of the most revered pilgrimage destinations for different Hindu traditions, showcasing its spiritual diversity.</p>
+                            <div class="chart-container">
+                                <canvas id="spiritualChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="space-y-6">
+                            <div class="bg-yellow-50 rounded-lg p-6">
+                                <h4 class="text-2xl mb-2">Somnath & Dwarka</h4>
+                                <p class="text-gray-600">Home to the first of the twelve **Jyotirlingas** (Somnath) and one of the four sacred **Char Dham** pilgrimage sites (Dwarkadhish Temple), making Gujarat a cornerstone of Hindu pilgrimage.</p>
+                            </div>
+                            <div class="bg-yellow-50 rounded-lg p-6">
+                                <h4 class="text-2xl mb-2">Jain Heritage: Palitana & Girnar</h4>
+                                <p class="text-gray-600">**Palitana's Shatrunjaya Hill** is one of the holiest sites for Jains, with thousands of intricately carved temples. **Girnar Hill** is another ancient and revered Tirth for both Jains and Hindus.</p>
+                            </div>
+                            <div class="bg-yellow-50 rounded-lg p-6">
+                                <h4 class="text-2xl mb-2">Shakti Peethas: Ambaji & Pavagadh</h4>
+                                <p class="text-gray-600">The state hosts two of the 51 sacred **Shakti Peethas** where parts of Goddess Sati's body are believed to have fallen, making Ambaji and Pavagadh major centers of goddess worship.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Culture & Cuisine Section -->
+            <section id="culture" class="content-section">
+                <div class="bg-white rounded-lg shadow-lg p-6 md:p-8">
+                    <h2 class="text-4xl md:text-5xl text-center mb-6">A Kaleidoscope of Culture: Festivals, Arts & Cuisine</h2>
+                    <p class="max-w-3xl mx-auto text-center text-gray-600 mb-8">Gujarat's vibrant cultural identity is a living tradition, celebrated through its dynamic festivals, passed down through generations of artisans, and savored in its unique cuisine. Engaging with its culture is to experience the true soul of the state.</p>
+                    
+                    <div class="mb-12">
+                        <h3 class="text-3xl text-center mb-6">Exquisite Handicrafts</h3>
+                        <div class="max-w-4xl mx-auto bg-orange-50 p-6 rounded-lg">
+                            <h4 class="text-2xl font-bold text-amber-800 mb-2">Patola of Patan</h4>
+                            <p class="text-gray-700">An exquisite and highly prized double ikat silk weaving technique from Patan. The process is extremely complex and time-consuming, with a history tracing back 11 centuries to the Salvi community. Patola sarees are considered symbols of status and good fortune.</p>
+                            <h4 class="text-2xl font-bold text-amber-800 mb-2 mt-4">Bandhani Tie-Dye</h4>
+                            <p class="text-gray-700">One of India's oldest tie-dye techniques, with origins dating back 5000 years. The fabric is meticulously tied into tiny knots before dyeing, creating intricate patterns. The Khatri community of Kutch is credited with its development.</p>
+                            <h4 class="text-2xl font-bold text-amber-800 mb-2 mt-4">Kutch Embroidery</h4>
+                            <p class="text-gray-700">A vibrant tradition of tribal communities in Kutch, known for its intricate mirror work (abhla) and use of bold colors. Styles vary between communities, often depicting scenes from mythology and daily life.</p>
+                            <h4 class="text-2xl font-bold text-amber-800 mb-2 mt-4">Rogan Art</h4>
+                            <p class="text-gray-700">An ancient and rare technique of cloth printing from Kutch. Paint, made from boiled castor oil and vegetable dyes, is applied freehand to fabric using a metal stylus, creating intricate motifs like the 'Tree of Life'.</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-3xl text-center mb-6">Vibrant Festivals</h3>
+                            <div class="space-y-4">
+                                <div class="bg-yellow-50 p-4 rounded-lg">
+                                    <h4 class="font-bold text-lg">Navratri</h4>
+                                    <p class="text-sm">A nine-night celebration of dance with Garba and Dandiya Raas.</p>
+                                </div>
+                                <div class="bg-yellow-50 p-4 rounded-lg">
+                                    <h4 class="font-bold text-lg">Uttarayan (Kite Festival)</h4>
+                                    <p class="text-sm">The sky fills with colorful kites in this international festival.</p>
+                                </div>
+                                <div class="bg-yellow-50 p-4 rounded-lg">
+                                    <h4 class="font-bold text-lg">Rann Utsav</h4>
+                                    <p class="text-sm">A cultural extravaganza in the white desert of Kutch.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-3xl text-center mb-6">Gastronomic Journey</h3>
+                            <div id="cuisine-accordion" class="space-y-2">
+                                <!-- Accordion items dynamically populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Planning Your Trip Section -->
+            <section id="planning" class="content-section">
+                <div class="bg-white rounded-lg shadow-lg p-6 md:p-8">
+                    <h2 class="text-4xl md:text-5xl text-center mb-6">Planning Your Gujarat Expedition</h2>
+                    <p class="max-w-3xl mx-auto text-center text-gray-600 mb-8">A well-planned journey ensures you can fully embrace the wonders of Gujarat. Here are some practicalities and tips to help you organize your trip, from the best time to visit to navigating the state with ease.</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-3xl mb-4">Optimal Timing</h3>
+                            <div class="bg-emerald-50 p-6 rounded-lg">
+                                <h4 class="font-bold text-lg text-emerald-800">October to February (Winter)</h4>
+                                <p class="text-sm text-gray-700 mt-2">This is the best period to visit. The weather is pleasant and cool, ideal for sightseeing, wildlife safaris (parks are open), and outdoor activities. It's also the season for major festivals like Navratri and Rann Utsav.</p>
+                            </div>
+                            <div class="bg-sky-50 p-6 rounded-lg mt-4">
+                                <h4 class="font-bold text-lg text-sky-800">July to September (Monsoon)</h4>
+                                <p class="text-sm text-gray-700 mt-2">An alternative for those who enjoy lush, green landscapes. However, be aware that some wildlife sanctuaries, including Gir National Park, are closed during this time due to heavy rains.</p>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-3xl mb-4">Getting Around</h3>
+                            <div class="bg-gray-100 p-6 rounded-lg">
+                                <p class="text-gray-700">Gujarat is well-connected by a network of trains, flights, and buses.</p>
+                                <ul class="list-disc list-inside mt-4 space-y-2 text-sm">
+                                    <li><b>Trains:</b> Budget-friendly and extensive network connecting major cities.</li>
+                                    <li><b>Flights:</b> Fastest option, with major airports in Ahmedabad, Vadodara, and Surat.</li>
+                                    <li><b>Buses:</b> GSRTC provides wide connectivity, including to remote tourist spots.</li>
+                                    <li><b>Local:</b> Auto-rickshaws, metro (in Ahmedabad), and private cabs offer convenient city travel.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Top Places to Visit (Detailed Guide) -->
+            <section id="detailed-places-guide" class="content-section">
+                <div class="bg-white rounded-lg shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6 text-center">Top Places to Visit in Gujarat, India</h2>
+                    <p class="text-lg text-gray-600 max-w-4xl mx-auto mb-8 text-center">Gujarat is a treasure trove of unique attractions – the only home to the endangered Asiatic lion on Earth and home to the vast Great Rann salt desert (the “Wild West” of India). The state’s diversity – from arid deserts and wildlife parks to historic cities and spiritual temples – means the best time to visit is the cool, dry winter season (roughly October–February) when festivals and outdoor sightseeing abound. Below are the top destinations organized by category:</p>
+
+                    <div class="space-y-10">
+                        <!-- Major Cities -->
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-4 flex items-center"><span class="text-yellow-500 mr-3">🏙️</span> Major Cities</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Ahmedabad (Sabarmati River)</h4>
+                                    <p class="text-sm text-gray-700 mt-1">Gujarat’s largest city and former capital, famed for its history and culture. UNESCO-listed Old City, Sabarmati Ashram, Bhadra Fort, and street food. </p>
+                                    <p class="text-xs text-gray-600 mt-2">Best time: winter (Oct–Mar), especially during Navratri and Uttarayan.</p>
+                                </div>
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Surat (Tapi River)</h4>
+                                    <p class="text-sm text-gray-700 mt-1">“Diamond Capital of the World” and a huge textile industry hub. Historical Mughal-era port with mosques, gardens, and stepwells. Famous for Gujarati cuisine.</p>
+                                    <p class="text-xs text-gray-600 mt-2">Best time: winter (Oct–Feb).</p>
+                                </div>
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Vadodara (Baroda)</h4>
+                                    <p class="text-sm text-gray-700 mt-1">The “cultural capital” combining Maratha royalty with modern life. Home to the opulent Laxmi Vilas Palace and rich heritage reflected in museums and memorials.</p>
+                                    <p class="text-xs text-gray-600 mt-2">Best time: winter (Oct–Feb).</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Historical & Architectural Landmarks -->
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-4 flex items-center"><span class="text-yellow-500 mr-3">🏛️</span> Historical & Architectural Landmarks</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Rani-ki-Vav (Patan)</h4>
+                                    <p class="text-sm text-gray-700 mt-1">UNESCO World Heritage stepwell (11th century), an inverted temple with seven levels of stairs and over 500 intricate stone sculptures.</p>
+                                    <p class="text-xs text-gray-600 mt-2">Best time: winter (Oct–Feb).</p>
+                                </div>
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Adalaj Stepwell (Adalaj, near Gandhinagar)</h4>
+                                    <p class="text-sm text-gray-700 mt-1">A flamboyant 15th-century five-story stepwell with elaborate Indo-Islamic carving. Remains cool inside.</p>
+                                    <p class="text-xs text-gray-600 mt-2">Best time: winter (Oct–Feb).</p>
+                                </div>
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Laxmi Vilas Palace (Vadodara)</h4>
+                                    <p class="text-sm text-gray-700 mt-1">Grand royal residence of the Gaekwad Maharajas, built in Indo-Saracenic style with vast grounds and gardens.</p>
+                                    <p class="text-xs text-gray-600 mt-2">Best time: winter (Oct–Feb).</p>
+                                </div>
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Champaner-Pavagadh Archaeological Park</h4>
+                                    <p class="text-sm text-gray-700 mt-1">UNESCO site, an ancient fortified city including ruined mosques, palaces, and stepwells. Pavagadh Hill has a 10th-century temple.</p>
+                                    <p class="text-xs text-gray-600 mt-2">Best time: winter.</p>
+                                </div>
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Sabarmati Ashram (Ahmedabad)</h4>
+                                    <p class="text-sm text-gray-700 mt-1">Mahatma Gandhi’s former ashram and a pivotal center for India's freedom movement.</p>
+                                    <p class="text-xs text-gray-600 mt-2">Best time: winter.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Religious & Spiritual Sites -->
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-4 flex items-center"><span class="text-yellow-500 mr-3">🙏</span> Religious & Spiritual Sites</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Somnath Temple (Prabhas Patan)</h4>
+                                    <p class="text-sm text-gray-700 mt-1">One of India’s holiest Shiva shrines, the first of the twelve Jyotirlingas, located on the Arabian Sea coast.</p>
+                                    <p class="text-xs text-gray-600 mt-2">Best time: cool months (Oct–Feb); major festivals are Mahashivratri and Kartik Purnima.</p>
+                                </div>
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Dwarkadhish Temple (Dwarka)</h4>
+                                    <p class="text-sm text-gray-700 mt-1">Famed Krishna temple and one of the Char Dham pilgrimage sites, believed to be over 2,500 years old.</p>
+                                    <p class="text-xs text-gray-600 mt-2">Best time: Nov–Feb and especially Janmashtami.</p>
+                                </div>
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Shatrunjaya Temples (Palitana)</h4>
+                                    <p class="text-sm text-gray-700 mt-1">Hundreds of exquisite Jain temples crowning Shatrunjaya Hill, one of Jainism’s holiest pilgrimage sites.</p>
+                                    <p class="text-xs text-gray-600 mt-2">Best time: winter (Nov–Feb).</p>
+                                </div>
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Ambaji Temple (Banaskantha)</h4>
+                                    <p class="text-sm text-gray-700 mt-1">Major Shakti Peeth; a gold-plated temple dedicated to Goddess Amba on Gabbar Hill.</p>
+                                    <p class="text-xs text-gray-600 mt-2">Best time: winter and Navaratri.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Wildlife & Nature Reserves -->
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-4 flex items-center"><span class="text-yellow-500 mr-3">🦁</span> Wildlife & Nature Reserves</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Gir National Park (Junagadh District)</h4>
+                                    <p class="text-sm text-gray-700 mt-1">The only place in the world where endangered Asiatic lions roam free. Also harbors leopards, deer, and over 300 bird species.</p>
+                                    <p class="text-xs text-gray-600 mt-2">Best time: October–March.</p>
+                                </div>
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Little Rann of Kutch (Kutch District)</h4>
+                                    <p class="text-sm text-gray-700 mt-1">Seasonal salt marsh, famous for the Wild Ass Sanctuary, protecting the last population of Indian wild ass.</p>
+                                    <p class="text-xs text-gray-600 mt-2">Best time: November–February.</p>
+                                </div>
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Velavadar Blackbuck National Park</h4>
+                                    <p class="text-sm text-gray-700 mt-1">Grassland sanctuary known for its thriving herds of elegant blackbuck antelope.</p>
+                                    <p class="text-xs text-gray-600 mt-2">Best time: October–March.</p>
+                                </div>
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Nal Sarovar Bird Sanctuary (Ahmedabad District)</h4>
+                                    <p class="text-sm text-gray-700 mt-1">Vast freshwater lake and marsh, a Ramsar wetland hosting over 250 bird species, especially migratory flamingos and storks.</p>
+                                    <p class="text-xs text-gray-600 mt-2">Best time: November–February.</p>
+                                </div>
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Thol Lake Sanctuary (Ahmedabad District)</h4>
+                                    <p class="text-sm text-gray-700 mt-1">Smaller lake sanctuary, a winter paradise for migratory waterfowl including flamingos, pelicans, and Sarus cranes.</p>
+                                    <p class="text-xs text-gray-600 mt-2">Best time: winter (Nov–Feb).</p>
+                                </div>
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Saputara (Dang District)</h4>
+                                    <p class="text-sm text-gray-700 mt-1">Gujarat’s only hill station, offering a cool retreat with lakes, waterfalls, and Gond tribal culture.</p>
+                                    <p class="text-xs text-gray-600 mt-2">Best time: Oct–Feb.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Beaches and Coastal Attractions -->
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-4 flex items-center"><span class="text-yellow-500 mr-3">🏖️</span> Beaches and Coastal Attractions</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Mandvi Beach (Kutch)</h4>
+                                    <p class="text-sm text-gray-700 mt-1">A long sandy beach and former port town, known for its 400-year-old shipbuilding yards and Vijay Vilas Palace.</p>
+                                    <p class="text-xs text-gray-600 mt-2">Best time: Nov–Feb.</p>
+                                </div>
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Shivrajpur Beach (Dwarka)</h4>
+                                    <p class="text-sm text-gray-700 mt-1">A Blue Flag–accredited beach with clean white sands and clear waters, excellent for snorkeling and swimming.</p>
+                                    <p class="text-xs text-gray-600 mt-2">Best time: November–March.</p>
+                                </div>
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Tithal/Suvali Beach (Surat/Gandhinagar)</h4>
+                                    <p class="text-sm text-gray-700 mt-1">Popular local beaches near Surat (Tithal, black sand) and Gandhinagar (Suvali, gentle waves).</p>
+                                    <p class="text-xs text-gray-600 mt-2">Best time: winter.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Cultural Experiences & Festivals -->
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-4 flex items-center"><span class="text-yellow-500 mr-3">🎭</span> Cultural Experiences & Festivals</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Rann Utsav (Great Rann of Kutch, Kutch District)</h4>
+                                    <p class="text-sm text-gray-700 mt-1">A seasonal desert festival celebrating Kutch’s heritage through folk music, dance, crafts, and cultural events under the full moon.</p>
+                                    <p class="text-xs text-gray-600 mt-2">Best time: Nov–Feb (check official schedule).</p>
+                                </div>
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Navratri & Dandiya Festival (Statewide)</h4>
+                                    <p class="text-sm text-gray-700 mt-1">Nine nights of Garba and Dandiya Raas, celebrated across Gujarat. Uttarayan (Kite Festival) on January 14 is another major event.</p>
+                                    <p class="text-xs text-gray-600 mt-2">Best time: Navratri (Sep/Oct), Uttarayan (Jan).</p>
+                                </div>
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Handicrafts & Villages</h4>
+                                    <p class="text-sm text-gray-700 mt-1">Explore artisan villages near Bhuj (weaving, crafts), pottery in Morbi, and Kutch’s embroidery and tie-dye work.</p>
+                                    <p class="text-xs text-gray-600 mt-2">Best time: year-round, local fairs in winter.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Offbeat & Hidden Gems -->
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-4 flex items-center"><span class="text-yellow-500 mr-3">✨</span> Offbeat & Hidden Gems</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Polo Forest (Sabarkantha District)</h4>
+                                    <p class="text-sm text-gray-700 mt-1">A dense dry deciduous forest with rivers and ruined 10th–15th-century temples, offering a peaceful jungle park experience.</p>
+                                    <p class="text-xs text-gray-600 mt-2">Best time: post-monsoon (Sept–Dec).</p>
+                                </div>
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Dholavira (Kutch District)</h4>
+                                    <p class="text-sm text-gray-700 mt-1">Archaeological site of the ancient Indus Valley civilization, notable for a well-planned Harappan city layout.</p>
+                                    <p class="text-xs text-gray-600 mt-2">Best time: winter.</p>
+                                </div>
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Hastangiri Caves (Jamnagar)</h4>
+                                    <p class="text-sm text-gray-700 mt-1">Ancient rock-cut Jain caves on hilltops, an offbeat pilgrimage site.</p>
+                                    <p class="text-xs text-gray-600 mt-2">Best time: winter.</p>
+                                </div>
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Udwada (Valsad District)</h4>
+                                    <p class="text-sm text-gray-700 mt-1">The holiest Parsi pilgrimage town, with the 2500-year-old Iranshah Atash Behram fire temple.</p>
+                                    <p class="text-xs text-gray-600 mt-2">Best time: year-round.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Travel Tips -->
+                        <div class="bg-orange-50 p-6 rounded-lg shadow-md">
+                            <h3 class="text-2xl font-bold text-gray-900 mb-4 flex items-center"><span class="text-yellow-500 mr-3">📝</span> Travel Tips</h3>
+                            <ul class="list-disc list-inside space-y-2 text-gray-700">
+                                <li>Most places are best seen in the cooler, dry season (October–February).</li>
+                                <li>Summer (March–June) is extremely hot, though hill stations (Saputara) and beaches offer relief.</li>
+                                <li>The monsoon (July–September) brings greenery to the interior, but can disrupt some travel.</li>
+                                <li>Gujarat’s vibrant festivals (Navratri, Uttarayan, Rann Utsav, Kartik Purnima at Palitana) make specific months particularly festive.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Ten Must-Visit Places Section -->
+            <section id="ten-must-visit" class="content-section">
+                <div class="bg-white rounded-lg shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6 text-center">Top Ten Must-Visit Places in Gujarat</h2>
+                    <p class="text-lg text-gray-600 max-w-4xl mx-auto mb-8 text-center">Gujarat offers an incredible variety of landscapes, heritage sites, wildlife sanctuaries and cultural experiences. Here are ten must-visit places in the state for a truly memorable journey:</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="bg-orange-50 p-4 rounded-lg shadow-sm flex items-start">
+                            <span class="text-xl font-bold text-orange-700 mr-3">1.</span>
+                            <div>
+                                <h4 class="font-bold text-lg text-orange-800">Great Rann of Kutch</h4>
+                                <p class="text-sm text-gray-700 mt-1">A vast, white salt desert that shimmers under the full moon, famous for the annual Rann Utsav festival featuring folk music, dance, camel safaris and handcrafted markets.</p>
+                            </div>
+                        </div>
+                        <div class="bg-orange-50 p-4 rounded-lg shadow-sm flex items-start">
+                            <span class="text-xl font-bold text-orange-700 mr-3">2.</span>
+                            <div>
+                                <h4 class="font-bold text-lg text-orange-800">Gir National Park</h4>
+                                <p class="text-sm text-gray-700 mt-1">The only home of the Asiatic lion, this wildlife sanctuary also shelters leopards, deer, antelope and hundreds of bird species—ideal for safari adventures.</p>
+                            </div>
+                        </div>
+                        <div class="bg-orange-50 p-4 rounded-lg shadow-sm flex items-start">
+                            <span class="text-xl font-bold text-orange-700 mr-3">3.</span>
+                            <div>
+                                <h4 class="font-bold text-lg text-orange-800">Somnath Temple</h4>
+                                <p class="text-sm text-gray-700 mt-1">One of the twelve Jyotirlinga shrines of Lord Shiva, overlooking the Arabian Sea. Its stunning architecture and timeless spiritual aura draw pilgrims and tourists alike.</p>
+                            </div>
+                        </div>
+                        <div class="bg-orange-50 p-4 rounded-lg shadow-sm flex items-start">
+                            <span class="text-xl font-bold text-orange-700 mr-3">4.</span>
+                            <div>
+                                <h4 class="font-bold text-lg text-orange-800">Dwarka</h4>
+                                <p class="text-sm text-gray-700 mt-1">An ancient city on the western tip of the Saurashtra peninsula, revered as the kingdom of Lord Krishna. Don’t miss the Dwarkadhish Temple and the nearby Beyt Dwarka island.</p>
+                            </div>
+                        </div>
+                        <div class="bg-orange-50 p-4 rounded-lg shadow-sm flex items-start">
+                            <span class="text-xl font-bold text-orange-700 mr-3">5.</span>
+                            <div>
+                                <h4 class="font-bold text-lg text-orange-800">Statue of Unity</h4>
+                                <p class="text-sm text-gray-700 mt-1">The world’s tallest statue (182 m) commemorating Sardar Vallabhbhai Patel. The surrounding valley offers a museum, viewing gallery, boating and nature trails.</p>
+                            </div>
+                        </div>
+                        <div class="bg-orange-50 p-4 rounded-lg shadow-sm flex items-start">
+                            <span class="text-xl font-bold text-orange-700 mr-3">6.</span>
+                            <div>
+                                <h4 class="font-bold text-lg text-orange-800">Saputara</h4>
+                                <p class="text-sm text-gray-700 mt-1">Gujarat’s only hill station, nestled in the Sahyadri range. Enjoy cool weather, boating on the Saputara Lake, scenic viewpoints and tribal cultural villages.</p>
+                            </div>
+                        </div>
+                        <div class="bg-orange-50 p-4 rounded-lg shadow-sm flex items-start">
+                            <span class="text-xl font-bold text-orange-700 mr-3">7.</span>
+                            <div>
+                                <h4 class="font-bold text-lg text-orange-800">Modhera Sun Temple</h4>
+                                <p class="text-sm text-gray-700 mt-1">A 11th-century temple dedicated to the sun god Surya, renowned for its exquisite carvings, stepped tank (Surya Kund) and annual music–dance festival.</p>
+                            </div>
+                        </div>
+                        <div class="bg-orange-50 p-4 rounded-lg shadow-sm flex items-start">
+                            <span class="text-xl font-bold text-orange-700 mr-3">8.</span>
+                            <div>
+                                <h4 class="font-bold text-lg text-orange-800">Champaner-Pavagadh Archaeological Park</h4>
+                                <p class="text-sm text-gray-700 mt-1">A UNESCO World Heritage site featuring a 16th-century fortified city, palaces, mosques and the sacred Pavagadh hill with its Kalika Mata Temple.</p>
+                            </div>
+                        </div>
+                        <div class="bg-orange-50 p-4 rounded-lg shadow-sm flex items-start">
+                            <span class="text-xl font-bold text-orange-700 mr-3">9.</span>
+                            <div>
+                                <h4 class="font-bold text-lg text-orange-800">Ahmedabad</h4>
+                                <p class="text-sm text-gray-700 mt-1">Known for its vibrant old city, UNESCO-designated Historic City area, the Sabarmati Ashram (Gandhi’s residence) and abundant street food and textile bazaars.</p>
+                            </div>
+                        </div>
+                        <div class="bg-orange-50 p-4 rounded-lg shadow-sm flex items-start">
+                            <span class="text-xl font-bold text-orange-700 mr-3">10.</span>
+                            <div>
+                                <h4 class="font-bold text-lg text-orange-800">Vadodara (Baroda)</h4>
+                                <p class="text-sm text-gray-700 mt-1">A cultural hub famous for the grand Lakshmi Vilas Palace (one of the largest private residences in the world), the Baroda Museum & Picture Gallery, and lush botanical gardens.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-center text-gray-600 mt-8 max-w-4xl mx-auto">Whether you’re chasing cultural immersion, wildlife encounters or architectural marvels, Gujarat promises a memorable journey at every turn.</p>
+                </div>
+            </section>
+
+            <!-- Curated List of Top Places by Theme Section -->
+            <section id="curated-places" class="content-section">
+                <div class="bg-white rounded-lg shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6 text-center">Curated List of Top Places to Visit by Theme</h2>
+                    <p class="text-lg text-gray-600 max-w-4xl mx-auto mb-8 text-center">Gujarat is incredibly diverse—rich in heritage, nature, wildlife, spirituality, and culture. Here’s a curated list of top places to visit across different themes to help you plan your ideal trip:</p>
+
+                    <div class="space-y-10">
+                        <!-- Heritage & Architecture -->
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-4 flex items-center"><span class="text-yellow-500 mr-3">🕌</span> Heritage & Architecture</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Rani Ki Vav, Patan</h4>
+                                    <p class="text-sm text-gray-700 mt-1">A UNESCO World Heritage stepwell adorned with elaborate carvings and sculptures.</p>
+                                </div>
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Adalaj Stepwell, Gandhinagar</h4>
+                                    <p class="text-sm text-gray-700 mt-1">15th-century marvel of architecture and engineering.</p>
+                                </div>
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Champaner-Pavagadh Archaeological Park</h4>
+                                    <p class="text-sm text-gray-700 mt-1">UNESCO site featuring fortresses, mosques, Jain temples, and hilltop views.</p>
+                                </div>
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Dwarkadhish Temple, Dwarka</h4>
+                                    <p class="text-sm text-gray-700 mt-1">Ancient Krishna temple, a key Char Dham pilgrimage site.</p>
+                                </div>
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Somnath Temple, Veraval</h4>
+                                    <p class="text-sm text-gray-700 mt-1">Legendary Jyotirlinga on the Arabian Sea coast.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Natural Wonders & Festivals -->
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-4 flex items-center"><span class="text-yellow-500 mr-3">🌵</span> Natural Wonders & Festivals</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Great Rann of Kutch</h4>
+                                    <p class="text-sm text-gray-700 mt-1">Vast white salt marsh; visit during Rann Utsav (Dec–Feb) for cultural festivities.</p>
+                                </div>
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Gir National Park</h4>
+                                    <p class="text-sm text-gray-700 mt-1">Only home of the Asiatic lion in India, also supports rich birdlife and wildlife safaris.</p>
+                                </div>
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Wild Ass Sanctuary, Little Rann</h4>
+                                    <p class="text-sm text-gray-700 mt-1">Unique grassland ecosystem home to rare wild asses and blackbucks.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Spiritual & Pilgrimage Sites -->
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-4 flex items-center"><span class="text-yellow-500 mr-3">🚩</span> Spiritual & Pilgrimage Sites</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Akshardham Temple, Gandhinagar</h4>
+                                    <p class="text-sm text-gray-700 mt-1">Modern marvel with beautiful carvings, exhibitions, and cultural gardens.</p>
+                                </div>
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Palitana Hill Temples</h4>
+                                    <p class="text-sm text-gray-700 mt-1">A revered Jain pilgrimage with over 800 temples atop Shatrunjaya Hill.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Hill Stations, Beaches, Wildlife -->
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-4 flex items-center"><span class="text-yellow-500 mr-3">🌿</span> Hill Stations, Beaches, Wildlife</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Saputara</h4>
+                                    <p class="text-sm text-gray-700 mt-1">Gujarat’s only hill station, lush with viewpoints (Sunrise Point, Gira Falls) and boating.</p>
+                                </div>
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Mandvi & Shivrajpur Beaches</h4>
+                                    <p class="text-sm text-gray-700 mt-1">Coastal gems with water sports, camel rides, historical shipyards; Shivrajpur is Blue Flag‑certified.</p>
+                                </div>
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Marine National Park, Gulf of Kutch & Nalsarovar Bird Sanctuary</h4>
+                                    <p class="text-sm text-gray-700 mt-1">Excellent for marine life and migratory birds.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Cities & Cultural Hubs -->
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-4 flex items-center"><span class="text-yellow-500 mr-3">🏙️</span> Cities & Cultural Hubs</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Ahmedabad</h4>
+                                    <p class="text-sm text-gray-700 mt-1">Vibrant city with Sabarmati Ashram, Akshardham, Kankaria Lake (carnival in December), and charming old pols.</p>
+                                </div>
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Bhuj, Kutch</h4>
+                                    <p class="text-sm text-gray-700 mt-1">Gateway to Kutch; visit Prag Mahal, Aina Mahal, local crafts, and Mandvi nearby.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Modern Landmark -->
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-4 flex items-center"><span class="text-yellow-500 mr-3">🗽</span> Modern Landmark</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Statue of Unity, Kevadia</h4>
+                                    <p class="text-sm text-gray-700 mt-1">World’s tallest statue (182m), dedicated to Sardar Patel. A massive attraction with a viewing gallery, museum, and ecological corridor.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Suggested Itineraries -->
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-4 flex items-center"><span class="text-yellow-500 mr-3">🗺️</span> Suggested Itineraries</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Cultural & Wildlife (9–10 days)</h4>
+                                    <p class="text-sm text-gray-700 mt-1">Ahmedabad → Patan (Rani Ki Vav) → Modhera → Dwarka → Somnath → Gir → Little Rann → Ahmedabad.</p>
+                                </div>
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Nature & Hill Escape (7–8 days)</h4>
+                                    <p class="text-sm text-gray-700 mt-1">Ahmedabad → Saputara → Polo Forest → Mandvi → Great Rann → Bhuj → Statue of Unity.</p>
+                                </div>
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Heritage Trail (5–6 days)</h4>
+                                    <p class="text-sm text-gray-700 mt-1">Ahmedabad → Adalaj → Champaner-Pavagadh → Palitana → Dholavira → back to Ahmedabad.</p>
+                                </div>
+                            </div>
+                            <p class="text-gray-600 mt-6 max-w-4xl mx-auto text-center">Let me know if you’d like detailed info on any spot—best time to visit, entry fees, nearby stays or transport tips are just a message away!</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Guide: Top Places to Visit -->
+            <section id="quick-guide-brief" class="content-section">
+                <div class="bg-white rounded-lg shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6 text-center">💡 Quick Guide: Top Places to Visit in Gujarat</h2>
+                    <p class="text-lg text-gray-600 max-w-4xl mx-auto mb-8 text-center">Gujarat is a vibrant state in India, brimming with history, culture, and natural beauty. Here are some top places to visit that showcase its diverse offerings:</p>
+
+                    <div class="space-y-8">
+                        <!-- Historical and Archaeological Sites -->
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-4 flex items-center"><span class="text-yellow-500 mr-3">📜</span> Historical and Archaeological Sites</h3>
+                            <ul class="list-disc list-inside space-y-2 text-gray-700">
+                                <li><b>Lothal</b>: One of the key sites of the ancient Indus Valley Civilization, perfect for history enthusiasts.</li>
+                                <li><b>Champaner-Pavagadh Archaeological Park</b>: A UNESCO World Heritage Site featuring stunning ruins from a bygone era.</li>
+                                <li><b>Modhera Sun Temple</b>: An architectural gem dedicated to the sun god, known for its intricate carvings.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Religious and Cultural Landmarks -->
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-4 flex items-center"><span class="text-yellow-500 mr-3">✨</span> Religious and Cultural Landmarks</h3>
+                            <ul class="list-disc list-inside space-y-2 text-gray-700">
+                                <li><b>Somnath Temple</b>: A revered pilgrimage site, one of the twelve Jyotirlingas, steeped in spiritual significance.</li>
+                                <li><b>Dwarka</b>: Believed to be Lord Krishna’s ancient kingdom, offering a blend of mythology and history.</li>
+                                <li><b>Sabarmati Ashram</b>: Located in Ahmedabad, this historic ashram was home to Mahatma Gandhi and a hub of India’s freedom movement.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Natural Beauty -->
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-4 flex items-center"><span class="text-yellow-500 mr-3">🏞️</span> Natural Beauty</h3>
+                            <ul class="list-disc list-inside space-y-2 text-gray-700">
+                                <li><b>Rann of Kutch</b>: A mesmerizing white salt desert, especially enchanting during the Rann Utsav festival.</li>
+                                <li><b>Gir National Park</b>: The last sanctuary of the Asiatic lion, ideal for wildlife lovers.</li>
+                                <li><b>Saputara</b>: A serene hill station in the Dang district, known for its lush landscapes and cool climate.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Modern Attractions -->
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-4 flex items-center"><span class="text-yellow-500 mr-3">🏗️</span> Modern Attractions</h3>
+                            <ul class="list-disc list-inside space-y-2 text-gray-700">
+                                <li><b>Statue of Unity</b>: The world’s tallest statue, honoring Sardar Patel, and a striking modern landmark.</li>
+                            </ul>
+                        </div>
+
+                        <p class="text-center text-gray-600 mt-8 max-w-4xl mx-auto">Each of these destinations highlights a unique facet of Gujarat’s rich heritage and scenic wonders. Whether you’re drawn to history, spirituality, nature, or modern marvels, Gujarat has something for everyone. Enjoy your visit!</p>
+
+                        <div class="bg-orange-50 p-6 rounded-lg shadow-sm text-center">
+                            <h3 class="text-xl font-bold text-orange-800 mb-2">More Information:</h3>
+                            <p class="text-sm text-gray-700">Explore more detailed insights on <a href="https://www.tripadvisor.in/Attractions-g297607-Activities-Gujarat.html" target="_blank" class="text-orange-600 hover:underline">Tripadvisor Gujarat</a> or <a href="https://www.holidify.com/state/gujarat/top-destinations-places-to-visit.html" target="_blank" class="text-orange-600 hover:underline">Holidify Gujarat</a>.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Top Places to Visit in Gujarat (Curated List with details) -->
+            <section id="top-places-curated-detailed" class="content-section">
+                <div class="bg-white rounded-lg shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6 text-center">🏆 Top Places to Visit in Gujarat (Curated List)</h2>
+                    <p class="text-lg text-gray-600 max-w-4xl mx-auto mb-8 text-center">Gujarat offers a vibrant mix of cultural heritage, wildlife adventures, spiritual sites, and natural wonders. Here’s a curated list of must-visit destinations:</p>
+
+                    <div class="space-y-10">
+                        <!-- Iconic Landmarks -->
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-4 flex items-center"><span class="text-yellow-500 mr-3">🗿</span> 1. Iconic Landmarks</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Statue of Unity (Kevadia)</h4>
+                                    <p class="text-sm text-gray-700 mt-1">The world’s tallest statue (182 m), dedicated to Sardar Patel. Features a museum, valley of flowers, and laser light shows. Entry fee starts at ₹750.</p>
+                                </div>
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Rani Ki Vav (Patan)</h4>
+                                    <p class="text-sm text-gray-700 mt-1">A UNESCO-listed stepwell from the 11th century, renowned for intricate sculptures depicting Hindu deities. Featured on the ₹100 note.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Spiritual & Religious Sites -->
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-4 flex items-center"><span class="text-yellow-500 mr-3">⛩️</span> 2. Spiritual & Religious Sites</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Somnath Temple (Prabhas Patan)</h4>
+                                    <p class="text-sm text-gray-700 mt-1">One of the 12 *Jyotirlingas*, this seaside Shiva temple has been rebuilt seven times. Hosts grand festivals during Maha Shivaratri.</p>
+                                </div>
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Dwarkadhish Temple (Dwarka)</h4>
+                                    <p class="text-sm text-gray-700 mt-1">A *Char Dham* pilgrimage site dedicated to Lord Krishna. Notable for its 72-pillared structure and ancient maritime history.</p>
+                                </div>
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Sun Temple (Modhera)</h4>
+                                    <p class="text-sm text-gray-700 mt-1">A 11th-century marvel dedicated to Surya (Sun God), featuring exquisite stone carvings and a stepwell.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Wildlife Adventures -->
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-4 flex items-center"><span class="text-yellow-500 mr-3">🦁</span> 3. Wildlife Adventures</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Gir National Park (Sasan Gir)</h4>
+                                    <p class="text-sm text-gray-700 mt-1">The only natural habitat of <b>Asiatic lions</b>. Offers jeep safaris to spot leopards, hyenas, and 300+ bird species. Best visited October–June.</p>
+                                </div>
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Wild Ass Sanctuary (Little Rann of Kutch)</h4>
+                                    <p class="text-sm text-gray-700 mt-1">Protects the endangered Indian wild ass and migratory birds like flamingos.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Natural Wonders -->
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-4 flex items-center"><span class="text-yellow-500 mr-3">🌄</span> 4. Natural Wonders</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Rann of Kutch</h4>
+                                    <p class="text-sm text-gray-700 mt-1">A vast salt desert transformed into a cultural hub during the <b>Rann Utsav</b> (Nov–Feb). Features white sands, folk performances, and starlit camping.</p>
+                                </div>
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Saputara</h4>
+                                    <p class="text-sm text-gray-700 mt-1">Gujarat’s sole hill station, nestled in the Western Ghats. Highlights: Saputara Lake, tribal museums, and monsoon treks.</p>
+                                </div>
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Mandvi Beach</h4>
+                                    <p class="text-sm text-gray-700 mt-1">Pristine shoreline with water sports, Vijay Vilas Palace, and traditional shipbuilding yards.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Heritage & Architecture -->
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-4 flex items-center"><span class="text-yellow-500 mr-3">🏰</span> 5. Heritage & Architecture</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Champaner-Pavagadh Archaeological Park (Vadodara)</h4>
+                                    <p class="text-sm text-gray-700 mt-1">A UNESCO World Heritage site blending Hindu-Muslim architecture, including the Jama Masjid.</p>
+                                </div>
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Laxmi Vilas Palace (Vadodara)</h4>
+                                    <p class="text-sm text-gray-700 mt-1">An Indo-Saracenic marvel four times larger than Buckingham Palace, with a golf course and museum.</p>
+                                </div>
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Sabarmati Ashram (Ahmedabad)</h4>
+                                    <p class="text-sm text-gray-700 mt-1">Gandhi’s residence during India’s freedom struggle. Displays his personal artifacts and the Dandi March history.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Vibrant Cities -->
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-4 flex items-center"><span class="text-yellow-500 mr-3">🏙️</span> 6. Vibrant Cities</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Ahmedabad</h4>
+                                    <p class="text-sm text-gray-700 mt-1">India’s first UNESCO World Heritage City. Explore Adalaj Stepwell, Kankaria Lake, and the bustling night markets.</p>
+                                </div>
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Bhuj</h4>
+                                    <p class="text-sm text-gray-700 mt-1">Gateway to Kutch, with attractions like Aina Mahal Palace and artisan villages for Bandhani textiles.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Coastal Escapes -->
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-4 flex items-center"><span class="text-yellow-500 mr-3">🏖️</span> 7. Coastal Escapes</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Diu</h4>
+                                    <p class="text-sm text-gray-700 mt-1">A former Portuguese colony with serene beaches (e.g., Nagoa), Fort Diu, and relaxed alcohol laws (unlike Gujarat).</p>
+                                </div>
+                                <div class="bg-orange-50 p-4 rounded-lg shadow-sm">
+                                    <h4 class="font-bold text-lg text-orange-800">Porbandar</h4>
+                                    <p class="text-sm text-gray-700 mt-1">Gandhi’s birthplace and home to ancient Ghumli ruins and bird sanctuaries.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Practical Tips -->
+                        <div class="bg-orange-50 p-6 rounded-lg shadow-md">
+                            <h3 class="text-2xl font-bold text-gray-900 mb-4 flex items-center"><span class="text-yellow-500 mr-3">📅</span> Practical Tips</h3>
+                            <ul class="list-disc list-inside space-y-2 text-gray-700">
+                                <li><b>Best Time to Visit:</b> October–February (pleasant weather; Rann Utsav in full swing).</li>
+                                <li><b>Transport:</b> Well-connected by flights (Ahmedabad, Vadodara), trains, and roads. Hire taxis for inter-city travel.</li>
+                                <li><b>Unique Experiences:</b>
+                                    <ul class="list-disc list-inside ml-4 mt-1 space-y-1">
+                                        <li>Attend Navratri festivals in Vadodara.</li>
+                                        <li>Shop for Patola silk sarees in Patan or Kutchi handicrafts.</li>
+                                        <li>Try Gujarati thalis with *dhokla*, *khandvi*, and *fafda*.</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <p class="text-center text-gray-600 mt-6 max-w-4xl mx-auto">For a deeper dive, explore curated itineraries like the <b>"Gujarat Holy Pilgrimage"</b> (Dwarka-Somnath-Gir) or <b>"Rann Utsav Packages"</b>.</p>
+                        <p class="text-center text-gray-600 font-semibold italic mt-4 max-w-4xl mx-auto">💡 "Gujarat’s diversity—from lion safaris to moonlit deserts—makes it India’s unsung gem."</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Detailed Tourist Destination Survey -->
+            <section id="detailed-tourism-survey" class="content-section">
+                <div class="bg-white rounded-lg shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6 text-center">📋 Detailed Survey Note: Exploring Gujarat's Tourist Destinations</h2>
+                    <p class="text-lg text-gray-600 max-w-4xl mx-auto mb-8 text-center">Gujarat, located in western India, is a state renowned for its rich cultural tapestry, historical significance, and diverse natural landscapes. This survey note aims to provide a comprehensive overview of the top places to visit, drawing from multiple reliable sources to ensure a thorough understanding for travelers. The analysis is based on travel websites, official tourism data, and other relevant resources, reflecting the state's appeal as a destination for history enthusiasts, spiritual seekers, and nature lovers alike.</p>
+
+                    <div class="space-y-8">
+                        <!-- Methodology and Sources -->
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-3">Methodology and Sources</h3>
+                            <p class="text-gray-700">The information was gathered from several key platforms, including Tripadvisor, Holidify, Tour My India, and the official Gujarat Tourism website. These sources were selected for their credibility and comprehensive coverage of tourist attractions. The focus was on identifying frequently mentioned destinations, ensuring the list reflects popular and significant sites. The current date, June 13, 2025, was acted to ensure relevance, though specific updates for 2025 were limited in some sources.</p>
+                        </div>
+
+                        <!-- Top Tourist Attractions in Gujarat -->
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-3">Top Tourist Attractions in Gujarat</h3>
+                            <p class="text-gray-700 mb-4">Gujarat's tourism landscape is diverse, offering a blend of historical, religious, natural, and modern attractions. Below is a detailed list of the top 10 places, categorized by type for clarity, followed by additional notable sites.</p>
+
+                            <!-- Historical and Architectural Marvels -->
+                            <h4 class="text-xl font-bold text-gray-900 mb-2 mt-6">Historical and Architectural Marvels</h4>
+                            <ul class="list-disc list-inside space-y-3 text-gray-700">
+                                <li>
+                                    <b>Statue of Unity</b>: Located near the Sardar Sarovar Dam, this is the world's tallest statue, standing at 182 meters, dedicated to Sardar Vallabhbhai Patel. It features a museum and observation deck, offering panoramic views. Best visited from October to March, with entry fees starting at INR 120 for adults (<a href="https://www.tourmyindia.com/states/gujarat/" target="_blank" class="text-blue-600 hover:underline">Tour My India Gujarat</a>).
+                                </li>
+                                <li>
+                                    <b>Rani Ki Vav, Patan</b>: A UNESCO World Heritage Site, this 11th-century stepwell is renowned for its intricate carvings and sculptures, depicting Hindu motifs. Open from 8:00 am to 6:00 pm, with entry fees of INR 15 for Indians and INR 200 for foreigners (<a href="https://www.tourmyindia.com/states/gujarat/" target="_blank" class="text-blue-600 hover:underline">Tour My India Gujarat</a>).
+                                </li>
+                                <li>
+                                    <b>Adalaj Step well, Ahmedabad</b>: Built in 1555 AD, this stepwell showcases Indo-Islamic architecture with a circular tank and intricate carvings. Best visited from July to March, open 8:00 am to 6:00 pm, with an entry fee of INR 25 (<a href="https://www.tourmyindia.com/states/gujarat/" target="_blank" class="text-blue-600 hover:underline">Tour My India Gujarat</a>).
+                                </li>
+                                <li>
+                                    <b>Laxmi Vilas Palace, Vadodara</b>: Constructed in 1890, this palace spans 700 acres and is four times the size of Buckingham Palace, featuring Indo-Saracenic architecture. Open 9:30 am to 5:00 pm, with entry fees of INR 150 for the palace and INR 60 for the museum (<a href="https://www.tourmyindia.com/states/gujarat/" target="_blank" class="text-blue-600 hover:underline">Tour My India Gujarat</a>).
+                                </li>
+                            </ul>
+
+                            <!-- Religious and Spiritual Sites -->
+                            <h4 class="text-xl font-bold text-gray-900 mb-2 mt-6">Religious and Spiritual Sites</h4>
+                            <ul class="list-disc list-inside space-y-3 text-gray-700">
+                                <li>
+                                    <b>Somnath Temple, Somnath</b>: One of the twelve Jyotirlinga shrines, this temple has been destroyed and rebuilt six times, reflecting Chalukya architecture. Open mornings 7:30 am to 11:30 am, afternoons 12:30 pm to 6:30 pm, and evenings 7:30 pm to 10:00 pm, best visited from October to March (<a href="https://www.tourmyindia.com/states/gujarat/" target="_blank" class="text-blue-600 hover:underline">Tour My India Gujarat</a>).
+                                </li>
+                                <li>
+                                    <b>Dwarkadhish Temple, Dwarka</b>: Part of the Char Dham pilgrimage, this temple is believed to be built by Lord Krishna's great-grandson, Vajranabh, 2500 years ago. Open 7:00 am to 12:00 pm and 5:00 pm to 9:00 pm, ideal from November to February, especially during Janmashtami (<a href="https://www.tripadvisor.in/Attractions-g297607-Activities-Gujarat.html" target="_blank" class="text-blue-600 hover:underline">Tripadvisor Gujarat</a>).
+                                </li>
+                                <li>
+                                    <b>Akshardham Temple, Gandhinagar</b>: A modern temple complex on 23 acres, built with 6000 tons of pink sandstone, featuring a 7 ft idol. Open 9:30 am to 7:30 pm, closed Mondays, with free entry but fees for exhibitions and water shows (INR 60-100 for adults, INR 40-70 for children) (<a href="https://www.tourmyindia.com/states/gujarat/" target="_blank" class="text-blue-600 hover:underline">Tour My India Gujarat</a>).
+                                </li>
+                            </ul>
+
+                            <!-- Natural Wonders and Wildlife -->
+                            <h4 class="text-xl font-bold text-gray-900 mb-2 mt-6">Natural Wonders and Wildlife</h4>
+                            <ul class="list-disc list-inside space-y-3 text-gray-700">
+                                <li>
+                                    <b>Great Rann of Kutch</b>: Spanning 7500 sq km, this salt marsh is the world's largest white desert, famous for its scenic beauty and the Rann Utsav festival from November to March. Entry fees are INR 100 for adults and INR 50 for children (<a href="https://www.tourmyindia.com/states/gujarat/" target="_blank" class="text-blue-600 hover:underline">Tour My India Gujarat</a>).
+                                </li>
+                                <li>
+                                    <b>Gir National Park</b>: The only natural habitat for Asiatic lions, covering 1412 sq km, with over 300 bird species. Best visited from October to May, with safari timings varying by season (summers 6:00 am to 9:00 am, 4:00 pm to 7:00 pm; winters 6:45 am to 9:45 am, 3:00 pm to 6:00 pm) (<a href="https://www.tourmyindia.com/states/gujarat/" target="_blank" class="text-blue-600 hover:underline">Tour My India Gujarat</a>).
+                                </li>
+                            </ul>
+
+                            <!-- Cultural and Heritage Sites -->
+                            <h4 class="text-xl font-bold text-gray-900 mb-2 mt-6">Cultural and Heritage Sites</h4>
+                            <ul class="list-disc list-inside space-y-3 text-gray-700">
+                                <li>
+                                    <b>Sabarmati Ashram, Ahmedabad</b>: Originally Satyagraha Ashram, this was Mahatma Gandhi's residence from 1917 to 1930, now a museum with an open-air exhibit on his life. Open 8:30 am to 6:30 pm, free entry, accessible year-round (<a href="https://www.tourmyindia.com/states/gujarat/" target="_blank" class="text-blue-600 hover:underline">Tour My India Gujarat</a>).
+                                </li>
+                                <li>
+                                    <b>Sabarmati Riverfront, Ahmedabad</b>: A 7 km waterfront with parks, promenades, and the Atal Bridge, ideal for walks and cycling. Open year-round, best from October to March (<a href="https://www.tripadvisor.in/Attractions-g297607-Activities-Gujarat.html" target="_blank" class="text-blue-600 hover:underline">Tripadvisor Gujarat</a>).
+                                </li>
+                                <li>
+                                    <b>Kankaria Lake, Ahmedabad</b>: A lakefront with a zoo, amusement park, and boat rides, perfect for family outings. Open year-round, best from October to March (<a href="https://www.tripadvisor.in/Attractions-g297607-Activities-Gujarat.html" target="_blank" class="text-blue-600 hover:underline">Tripadvisor Gujarat</a>).
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Additional Notable Destinations -->
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-3">Additional Notable Destinations</h3>
+                            <p class="text-gray-700 mb-4">Beyond the top 10, other significant places include:</p>
+                            <ul class="list-disc list-inside space-y-3 text-gray-700">
+                                <li>
+                                    <b>Dholavira</b>: A major Indus Valley Civilization site, covering 100 hectares, dating back to 2900 BC-1500 BC, best visited from October to March, open 9:00 am to 6:00 pm, free entry (<a href="https://www.tourmyindia.com/states/gujarat/" target="_blank" class="text-blue-600 hover:underline">Tour My India Gujarat</a>).
+                                </li>
+                                <li>
+                                    <b>Lothal</b>: Another Harappan site, a 4500-year-old port town with a museum, open 10:00 am to 5:00 pm, closed Fridays, entry fee INR 5 (<a href="https://www.tourmyindia.com/states/gujarat/" target="_blank" class="text-blue-600 hover:underline">Tour My India Gujarat</a>).
+                                </li>
+                                <li>
+                                    <b>Saputara</b>: Gujarat's only hill station, featuring the Honey Bees Center and Gira Waterfalls, accessible year-round, ideal from mid-March to mid-November (<a href="https://www.holidify.com/state/gujarat/top-destinations-places-to-visit.html" target="_blank" class="text-blue-600 hover:underline">Holidify Gujarat</a>).
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Comparative Analysis -->
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-3">Comparative Analysis of Attractions</h3>
+                            <div class="overflow-x-auto rounded-lg shadow-sm border border-gray-200">
+                                <table class="min-w-full info-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Attraction</th>
+                                            <th>Rating (Holidify)</th>
+                                            <th>Best Time to Visit</th>
+                                            <th>Known For</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td>Statue of Unity</td><td>-</td><td>October to March</td><td>World's tallest statue, museum</td></tr>
+                                        <tr><td>Great Rann of Kutch</td><td>4.0/5</td><td>November to March</td><td>White desert, Rann Utsav</td></tr>
+                                        <tr><td>Gir National Park</td><td>4.4/5</td><td>October to May</td><td>Asiatic lions, wildlife safaris</td></tr>
+                                        <tr><td>Somnath Temple</td><td>4.1/5</td><td>October to March</td><td>Jyotirlinga shrine, architecture</td></tr>
+                                        <tr><td>Dwarkadhish Temple</td><td>4.2/5</td><td>November to February</td><td>Hindu pilgrimage, Lord Krishna</td></tr>
+                                        <tr><td>Sabarmati Ashram</td><td>-</td><td>Throughout the Year</td><td>Gandhi's residence, independence</td></tr>
+                                        <tr><td>Rani Ki Vav</td><td>-</td><td>October to March</td><td>UNESCO stepwell, carvings</td></tr>
+                                        <tr><td>Adalaj Step well</td><td>-</td><td>July to March</td><td>Indo-Islamic architecture</td></tr>
+                                        <tr><td>Laxmi Vilas Palace</td><td>-</td><td>Throughout the Year</td><td>Royal heritage, Indo-Saracenic style</td></tr>
+                                        <tr><td>Akshardham Temple</td><td>-</td><td>Throughout the Year</td><td>Modern temple, pink sandstone</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p class="text-gray-700 mt-6">This table highlights the diversity, with ratings reflecting traveler feedback on Holidify, and best times aligning with weather conditions for optimal visits.</p>
+                        </div>
+
+                        <!-- Cultural and Seasonal Considerations -->
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-3">Cultural and Seasonal Considerations</h3>
+                            <p class="text-gray-700">Gujarat's tourism is enhanced by its festivals, such as Navratri, the International Kite Festival, and Rann Utsav, which attract visitors globally. The state is policy-driven, with a new tourism policy for 2021-25 aiming to develop historical sites and affordable accommodations, ensuring a welcoming experience for tourists (<a href="https://www.gujarattourism.com/" target="_blank" class="text-orange-600 hover:underline">Gujarat Tourism</a>).</p>
+                        </div>
+
+                        <!-- Conclusion -->
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-3">Conclusion</h3>
+                            <p class="text-gray-700">Gujarat's tourist attractions cater to a wide range of interests, from exploring ancient civilizations at Dholavira and Lothal to experiencing the spiritual ambiance of Somnath and Dwarka. The state's natural beauty, exemplified by the Great Rann of Kutch and Gir National Park, complements its rich cultural heritage, making it a must-visit destination in 2025.</p>
+                        </div>
+
+                        <!-- Key Citations -->
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-3">Key Citations</h3>
+                            <ul class="list-disc list-inside space-y-1 text-gray-700 text-sm">
+                                <li><a href="https://www.sotc.in/blog/indian-holidays/amazing-tourist-places-to-visit-in-gujarat" target="_blank" class="text-orange-600 hover:underline">SOTC 10 Places to Visit in Gujarat</a></li>
+                                <li><a href="https://www.tripadvisor.in/Attractions-g297607-Activities-Gujarat.html" target="_blank" class="text-orange-600 hover:underline">Tripadvisor THE 30 BEST Places to Visit in Gujarat</a></li>
+                                <li><a href="https://www.holidify.com/state/gujarat/top-destinations-places-to-visit.html" target="_blank" class="text-orange-600 hover:underline">Holidify 42 Places to Visit in Gujarat Tourist Places</a></li>
+                                <li><a href="https://www.tourmyindia.com/blog/tourist-attractions-in-gujarat/" target="_blank" class="text-orange-600 hover:underline">Tour My India 32 Must-Visit Tourist Attractions Places in Gujarat</a></li>
+                                <li><a href="https://www.gujarattourism.com/" target="_blank" class="text-orange-600 hover:underline">Gujarat Tourism Official Website Top Places to Visit</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- June 2025 Travel Guide Section -->
+            <section id="june-2025-guide" class="content-section">
+                <div class="bg-white rounded-lg shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6 text-center">📅 June 2025 Travel Guide to Gujarat</h2>
+                    <p class="text-lg text-gray-600 max-w-4xl mx-auto mb-8 text-center">Planning a trip to Gujarat in June 2025? Here's a quick guide to help you navigate the weather, festivals, and top attractions during this time.</p>
+
+                    <div class="space-y-8">
+                        <!-- Key Points -->
+                        <div class="bg-orange-50 p-6 rounded-lg shadow-sm">
+                            <h3 class="text-2xl font-bold text-orange-800 mb-3">Key Points</h3>
+                            <ul class="list-disc list-inside space-y-2 text-gray-700">
+                                <li>Gujarat offers diverse attractions like temples, wildlife parks, and historical sites.</li>
+                                <li>Top places include Ahmedabad, Dwarka, Somnath, and Gir National Park.</li>
+                                <li>June 2025 is hot (28°C to 38°C) with possible rain, ideal for indoor visits.</li>
+                                <li>The Rath Yatra festival on June 27, 2025, in Ahmedabad is a cultural highlight.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Overview -->
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-3">Overview</h3>
+                            <p class="text-gray-700">Gujarat, in western India, is known for its rich culture, history, and natural beauty. It’s a great destination for exploring temples, wildlife, and historical sites, especially if you plan your visits during cooler parts of the day in June.</p>
+                        </div>
+
+                        <!-- Top Recommendations -->
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-3">Top Recommendations for June</h3>
+                            <p class="text-gray-700 mb-4">Here are some must-visit places, considering the hot weather in June:</p>
+                            <ul class="list-disc list-inside space-y-2 text-gray-700">
+                                <li><b>Ahmedabad</b>: Perfect for history lovers with Sabarmati Ashram and the vibrant Rath Yatra festival on June 27, 2025.</li>
+                                <li><b>Dwarka</b>: Visit the Dwarkadhish Temple, a key pilgrimage site for Hindus.</li>
+                                <li><b>Somnath</b>: Explore the Somnath Temple, one of the twelve Jyotirlinga shrines.</li>
+                                <li><b>Gir National Park</b>: Ideal for wildlife, especially to see Asiatic Lions, though June isn't the best time for safaris due to potential monsoon closures.</li>
+                                <li><b>Rann of Kutch</b>: Known for its unique salt desert, though June isn’t peak season for festivals or the white desert experience.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Weather Considerations -->
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-3">Weather Considerations</h3>
+                            <p class="text-gray-700">June is hot, with temperatures ranging from 28°C to 38°C (82°F to 100°F), and the monsoon may bring occasional rain. Plan indoor activities or outdoor visits early morning or evening to stay comfortable.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SWOT Analysis Section -->
+            <section id="swot-analysis" class="content-section">
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">Strategic Overview: SWOT Analysis</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-sm">
+                        <div class="bg-green-50 p-4 rounded-lg">
+                            <h3 class="font-bold text-lg text-green-800 mb-2">Strengths</h3>
+                            <ul class="list-disc list-inside space-y-2 text-gray-700">
+                                <li>Extremely diverse portfolio (Heritage, Nature, Spiritual).</li>
+                                <li>Four globally recognized UNESCO World Heritage sites.</li>
+                                <li>Exclusive habitat of the Asiatic Lion.</li>
+                                <li>Strong, vibrant cultural identity and festivals.</li>
+                                <li>Well-developed transport infrastructure.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-red-50 p-4 rounded-lg">
+                            <h3 class="font-bold text-lg text-red-800 mb-2">Weaknesses</h3>
+                            <ul class="list-disc list-inside space-y-2 text-gray-700">
+                                <li>Strong seasonality with a deep trough in summer.</li>
+                                <li>Monsoon closures for key wildlife parks.</li>
+                                <li>Infrastructure challenges in some remote rural areas.</li>
+                                <li>Perception as primarily a religious/heritage destination.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-orange-50 p-4 rounded-lg">
+                            <h3 class="font-bold text-lg text-orange-800 mb-2">Opportunities</h3>
+                            <ul class="list-disc list-inside space-y-2 text-gray-700">
+                                <li>Develop and market niche circuits (e.g., Buddhist, Culinary).</li>
+                                <li>Promote monsoon tourism focusing on lush landscapes.</li>
+                                <li>Leverage digital marketing for global outreach.</li>
+                                <li>Expand eco-tourism and adventure sports offerings.</li>
+                                <li>Promote handicrafts for sustainable rural income.</li>
+                            </ul>
+                        </div>
+                         <div class="bg-yellow-50 p-4 rounded-lg">
+                            <h3 class="font-bold text-lg text-yellow-800 mb-2">Threats</h3>
+                            <ul class="list-disc list-inside space-y-2 text-gray-700">
+                                <li>Intense competition from other Indian states.</li>
+                                <li>Risk of over-tourism at popular heritage/spiritual sites.</li>
+                                <li>Climate change impacting natural ecosystems and weather patterns.</li>
+                                <li>Need for continuous infrastructure upgrades.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Future Outlook Section -->
+            <section id="future-outlook-section" class="content-section">
+                 <div class="lg:col-span-3 text-center bg-white rounded-lg shadow-lg p-8">
+                     <h2 class="text-2xl font-bold text-gray-900 mb-4">Future Outlook</h2>
+                    <p class="text-gray-600 max-w-4xl mx-auto">Gujarat's tourism industry is poised for significant growth, driven by its unique blend of heritage, spirituality, and nature. The key to unlocking its full potential lies in strategic diversification into niche markets like eco-tourism and culinary travel, coupled with sustainable infrastructure development and targeted global marketing. By leveraging its inherent strengths and addressing its weaknesses, Gujarat can solidify its position as a premier, multi-faceted travel destination on the world stage.</p>
+                </div>
+            </section>
+
+            <!-- Contact Us Section -->
+            <section id="contact-us" class="content-section">
+                <div class="bg-white rounded-lg shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6 text-center">📞 Contact Information</h2>
+                    <p class="text-lg text-gray-600 max-w-4xl mx-auto mb-8 text-center">Here's how you can get in touch with various Vishal Group entities and Dr. Anoop Lal Sinha.</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+                        <!-- Vishal Hospital (Rajkot) -->
+                        <div class="bg-orange-50 p-6 rounded-lg shadow-sm">
+                            <h3 class="text-2xl font-bold text-orange-800 mb-3">Vishal Hospital (Rajkot)</h3>
+                            <p class="text-gray-700 mb-2"><b>Address:</b> Vishal hospital, Kailashwadi Main Road, opposite Taluka Polish Choki, Junction Plot, Rajkot, Gujarat 360001</p>
+                            <p class="text-gray-700 mb-2"><b>Mobile:</b> <a href="tel:+919228105245" class="text-orange-600 hover:underline">9228105245</a></p>
+                            <p class="text-gray-700 mb-2"><b>Landline:</b> <a href="tel:+9102812450408" class="text-orange-600 hover:underline">0281-2450408</a></p>
+                            <p class="text-gray-700"><b>Website:</b> <a href="https://vishalhospitalrajkot.github.io/" target="_blank" class="text-orange-600 hover:underline">vishalhospitalrajkot.github.io</a></p>
+                        </div>
+
+                        <!-- Vishal Banquet Hall (Bihar) -->
+                        <div class="bg-orange-50 p-6 rounded-lg shadow-sm">
+                            <h3 class="text-2xl font-bold text-orange-800 mb-3">Vishal Banquet Hall (Bihar)</h3>
+                            <p class="text-gray-700 mb-2"><b>Address:</b> vishal banquet hall, Gaya-Dobhi Rd, Musatpura, Bihar 823004</p>
+                            <p class="text-gray-700 mb-2"><b>Mobile:</b> <a href="tel:+919228105245" class="text-orange-600 hover:underline">9228105245</a></p>
+                            <p class="text-gray-700"><b>Website:</b> <a href="https://vishalbanquethall1.github.io/" target="_blank" class="text-orange-600 hover:underline">vishalbanquethall1.github.io</a></p>
+                        </div>
+
+                        <!-- Vishal Hospital (Bodhgaya, Bihar) -->
+                        <div class="bg-orange-50 p-6 rounded-lg shadow-sm">
+                            <h3 class="text-2xl font-bold text-orange-800 mb-3">Vishal Hospital (Bodhgaya, Bihar)</h3>
+                            <p class="text-gray-700 mb-2"><b>Address:</b> vishal hospital, Gaya-Dobhi Rd, Musatpura, Bihar 823004</p>
+                            <p class="text-gray-700 mb-2"><b>Mobile:</b> <a href="tel:+919228105245" class="text-orange-600 hover:underline">9228105245</a></p>
+                            <p class="text-gray-700"><b>Website:</b> <a href="https://vishalhospitalrajkot.github.io/vishalhospitalbodhgaya/" target="_blank" class="text-orange-600 hover:underline">vishalhospitalrajkot.github.io/vishalhospitalbodhgaya/</a></p>
+                        </div>
+
+                        <!-- Dr. Anoop Lal Sinha -->
+                        <div class="bg-orange-50 p-6 rounded-lg shadow-sm">
+                            <h3 class="text-2xl font-bold text-orange-800 mb-3">Dr. Anoop Lal Sinha</h3>
+                            <p class="text-gray-700 mb-2"><b>Mobile:</b> <a href="tel:+919228105245" class="text-orange-600 hover:underline">9228105245</a></p>
+                            <p class="text-gray-700"><b>Website:</b> <a href="https://vishalhospitalrajkot.github.io/Dr.AnoopLalSinha/" target="_blank" class="text-orange-600 hover:underline">vishalhospitalrajkot.github.io/Dr.AnoopLalSinha/</a></p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+    </div>
+
+    <script>
+        const sandsSaffronPalette = {
+            saffron: '#FFA500',
+            darkSaffron: '#e69500',
+            sandyBrown: '#D2B48C',
+            teal: '#008080',
+            darkTeal: '#006666',
+            cream: '#FFF8F0',
+            darkBrown: '#8B4513',
+            greyText: '#4A4A4A',
+            lightOrange: '#FFECC6'
+        };
+
+        const defaultChartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        font: {
+                           size: 12
+                        },
+                        boxWidth: 20,
+                        padding: 20
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            const item = tooltipItems[0];
+                            let label = item.chart.data.labels[item.dataIndex];
+                            if (Array.isArray(label)) {
+                                return label.join(' ');
+                            } else {
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        // Tourist Interest Chart
+        new Chart(document.getElementById('touristInterestChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Spiritual & Pilgrimage', 'Historical & Heritage', 'Nature & Wildlife', 'Cultural & Festival', 'Other'],
+                datasets: [{
+                    label: 'Tourist Interest Share',
+                    data: [40, 30, 15, 10, 5],
+                    backgroundColor: [sandsSaffronPalette.darkBrown, sandsSaffronPalette.saffron, sandsSaffronPalette.teal, sandsSaffronPalette.sandyBrown, sandsSaffronPalette.greyText],
+                    borderColor: '#fff',
+                    borderWidth: 2
+                }]
+            },
+            options: {...defaultChartOptions, cutout: '60%'}
+        });
+        
+        // Wildlife Chart
+        const wildlifeChartCtx = document.getElementById('wildlifeChart');
+        new Chart(wildlifeChartCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Wildlife Sanctuaries', 'National Parks'],
+                datasets: [{
+                    label: 'Number of Protected Areas',
+                    data: [21, 4],
+                    backgroundColor: [sandsSaffronPalette.teal, sandsSaffronPalette.saffron],
+                    borderWidth: 1,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y',
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            title: function(tooltipItems) { return tooltipItems[0].label; }
+                        }
+                    }
+                },
+                scales: {
+                    x: { beginAtZero: true, grid: { display: false } },
+                    y: { grid: { display: false } }
+                }
+            }
+        });
+
+        // Spiritual Chart
+        const spiritualChartCtx = document.getElementById('spiritualChart');
+        new Chart(spiritualChartCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Jyotirlinga (Shiva)', 'Char Dham (Krishna)', 'Shakti Peeth (Goddess)', 'Jain Tirths', 'Other'],
+                datasets: [{
+                    data: [1, 1, 2, 2, 3], /* Data adjusted to illustrate counts of types, not just volume. Example values. */
+                    backgroundColor: [sandsSaffronPalette.darkBrown, sandsSaffronPalette.saffron, sandsSaffronPalette.teal, sandsSaffronPalette.sandyBrown, sandsSaffronPalette.greyText],
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' },
+                    tooltip: {
+                        callbacks: {
+                            title: function(tooltipItems) { return tooltipItems[0].label; }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Cuisine Accordion
+        const cuisineData = [
+            { title: "Farsans (Snacks)", content: "The savory heart of Gujarati meals. Includes steamed cakes like Khaman and Dhokla, and fried items like Fafda and Ganthiya." },
+            { title: "Shaak & Kathol (Mains)", content: "Main courses typically include a vegetable dish (Shaak) and a pulse or bean dish (Kathol). Undhiyu, a mixed winter vegetable specialty, is famous." },
+            { title: "Breads", content: "A wide variety accompanies meals, from thin wheat Rotlis and savory Theplas to thick Bajra (millet) Rotlos." },
+            { title: "Mishthaan (Sweets)", content: "Gujarati meals often feature sweets like Shrikhand (strained yogurt), Aamras (mango pulp), and Basundi (thickened sweet milk)." }
+        ];
+
+        const accordionContainer = document.getElementById('cuisine-accordion');
+        cuisineData.forEach((item, index) => {
+            const accordionItem = document.createElement('div');
+            accordionItem.innerHTML = `
+                <button class="w-full text-left font-semibold p-4 bg-orange-50 rounded-lg flex justify-between items-center" onclick="toggleAccordion(${index})">
+                    <span>${item.title}</span>
+                    <span class="transform transition-transform duration-300" id="icon-${index}">▶</span>
+                </button>
+                <div id="content-${index}" class="hidden p-4 bg-white border border-t-0 rounded-b-lg">
+                    <p>${item.content}</p>
+                </div>
+            `;
+            accordionContainer.appendChild(accordionItem);
+        });
+
+        function toggleAccordion(index) {
+            const content = document.getElementById(`content-${index}`);
+            const icon = document.getElementById(`icon-${index}`);
+            const isHidden = content.classList.contains('hidden');
+            
+            if (isHidden) {
+                content.classList.remove('hidden');
+                icon.classList.add('rotate-90');
+            } else {
+                content.classList.add('hidden');
+                icon.classList.remove('rotate-90');
+            }
+        }
+
+        // Audio Player
+        const audio = document.getElementById('audioOverview');
+        const playPauseButton = document.getElementById('playPauseButton');
+
+        playPauseButton.addEventListener('click', () => {
+            if (audio.paused) {
+                audio.play();
+                playPauseButton.textContent = '⏸ Pause Overview';
+            } else {
+                audio.pause();
+                playPauseButton.textContent = '▶ Play Overview';
+            }
+        });
+
+        audio.addEventListener('ended', () => {
+            playPauseButton.textContent = '▶ Play Overview';
+        });
+
+        // Google Translate Initialization
+        function googleTranslateElementInit() {
+          new google.translate.TranslateElement({
+            pageLanguage: 'en', // Default language of the page
+            includedLanguages: 'en,hi,gu', // English, Hindi, Gujarati
+            layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+          }, 'google_translate_element');
+        }
+    </script>
+
+</body>
+</html>
